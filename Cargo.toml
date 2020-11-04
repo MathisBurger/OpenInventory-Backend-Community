@@ -11,3 +11,4 @@ actix-web = "3"
 serde = { version = "1.0", features = ["derive"] }
 mysql = "20.0.1"
 json = "0.12.4"
+curl = "0.4.34"

@@ -6,7 +6,7 @@ mod utils;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    utils::installation::InstallationProcess();
+    utils::installation::InstallationProcess().await;
     println!("Started Webserver on http://127.0.0.1:8080");
     HttpServer::new(|| {
         App::new()
