@@ -3,3 +3,4 @@ pub mod installation_functions;
 pub mod MySQL;
 pub mod json_models;
 pub mod loadFromConfig;
+pub mod mysql_installation;
