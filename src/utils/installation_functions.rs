@@ -1,4 +1,3 @@
-use std::path::Path;
 use std::path::PathBuf;
 use std::io;
 use std::fs;
@@ -9,7 +8,7 @@ use serde_json;
 use std::env;
 use std::io::BufReader;
 use std::fs::File;
-use serde_json::Value;
+use serde_json::{Value, to_string};
 
 pub fn check_available() -> bool {
     fs::metadata("./config.json").is_ok()
@@ -47,11 +46,24 @@ pub fn write_default_config(config: String) -> std::io::Result<()> {
     Ok(())
 }
 
-pub async fn check_config_syntax(config: String) -> std::io::Result<()> {
-    let data: serde_json::Value = serde_json::from_str(&config).unwrap();
-    let obj = data.as_object().unwrap();
-    let db_value = obj.get("database").unwrap();
-    println!("{}", db_value);
-    Ok(())
+pub fn check_config_syntax(config: String) -> std::io::Result<String> {
+    let data: serde_json::Value = serde_json::from_str(&config).expect("Cannot read json from string");
+    if data["database"]["username"].as_str().unwrap() != "<username>" {
+        if data["database"]["password"].as_str().unwrap() != "<password>" {
+            if data["database"]["database"].as_str().unwrap() != "<database>" {
+                if data["database"]["host"].as_str().unwrap() != "<host>" {
+                    Ok("Config contains no errors".to_string())
+                } else {
+                    Ok("Host cant be default. Please change it".to_string())
+                }
+            } else {
+                Ok("Database name cant be default. Please Change it".to_string())
+            }
+        } else {
+            Ok("Password cant be default. Please change it".to_string())
+        }
+    } else {
+        Ok("Username cant be template default. Please change it".to_string())
+    }
 }
 

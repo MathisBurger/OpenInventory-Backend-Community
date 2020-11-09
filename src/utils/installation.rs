@@ -1,6 +1,6 @@
 use crate::utils::installation_functions;
+use crate::utils;
 use std::process;
-
 
 pub async fn InstallationProcess() {
     if !installation_functions::check_available() {
@@ -21,7 +21,15 @@ pub async fn InstallationProcess() {
         process::exit(0);
     } else {
         let config = installation_functions::getContent().await;
-        installation_functions::check_config_syntax(config).await;
+        let ans = installation_functions::check_config_syntax(config).expect("Errow while processing config");
+        if ans != "Config contains no errors".to_string() {
+            println!("{}", ans);
+            process::exit(0);
+        } else {
+            let para: String = format!("{}", "database;username");
+            let param = utils::loadFromConfig::loadParam(para).await.expect("Error while loading param from config");
+            println!("{}", param);
+        }
     }
 
 }
