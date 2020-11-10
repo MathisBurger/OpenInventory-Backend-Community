@@ -3,6 +3,7 @@ use crate::utils;
 use std::process;
 use mysql::*;
 use mysql::prelude::*;
+use std::borrow::Borrow;
 
 pub async fn InstallationProcess() {
     if !installation_functions::check_available() {
@@ -35,6 +36,11 @@ pub async fn InstallationProcess() {
             let mysql_url = format!("mysql://{}:{}@{}/{}", username, password, host, database);
             let pool = Pool::new(mysql_url).expect("Error while creating pool");
             let mut conn = pool.get_conn().expect("Error while creating connection pool");
+            if !utils::mysql_installation::checkForTables(&conn) {
+                if utils::mysql_installation::generateTable(&conn, "inv_users".to_string()) {
+
+                }
+            }
         }
     }
 
