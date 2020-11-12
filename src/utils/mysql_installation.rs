@@ -1,7 +1,15 @@
 use mysql::*;
 use mysql::prelude::*;
+use crate::Var;
+use std::borrow::BorrowMut;
+use crate::utils::hashing;
+use crate::utils::token;
 struct table {
     name: String
+}
+
+struct param {
+    param: String
 }
 
 fn checkIfContain(tables: Vec<table>, name: String) -> bool {
@@ -14,16 +22,30 @@ fn checkIfContain(tables: Vec<table>, name: String) -> bool {
     contains
 }
 
-pub fn checkForTables(mut conn: &PooledConn) -> bool {
+pub fn checkForTables(conn: &mut PooledConn) -> std::io::Result<()> {
     let tables = conn.query_map("SHOW TABLES;", |table_name|{ table {name: table_name}}).expect("Cannot get all tables");
     if checkIfContain(tables, "inv_users".to_string()) {
-        true
+        println!("Table: inv_users exists");
+        Ok(())
     } else {
-        false
+        generate_table(conn.borrow_mut(), "inv_users".to_string());
+        Ok(())
     }
 }
 
-pub fn generateTable(mut conn: &PooledConn, name: String) -> bool {
-    true
+fn generate_table(conn: &mut PooledConn, name: String) -> std::io::Result<()>{
+    if name == "inv_users".to_string() {
+        conn.query_drop(Var::create_users_table_string().as_str()).expect("Cannot create MySQL Table");
+        insert_default_user(conn.borrow_mut());
+    }
+    Ok(())
+}
+
+fn insert_default_user(conn: &mut PooledConn) -> std::io::Result<()>{
+    let hash = hashing::hash_including_salt("Admin123".to_string());
+    let pwd_struct: param = param {param: hash};
+    conn.exec_batch(r"INSERT INTO inv_users (id, username, password, token, root, mail, displayname, register_date, status) VALUES (NULL, 'root', ':pwd', 'None', '1', 'example@mail.de', 'root', current_timestamp(), 'enabled');",
+              
+    Ok(())
 }
 

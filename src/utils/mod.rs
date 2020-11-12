@@ -4,3 +4,5 @@ pub mod MySQL;
 pub mod json_models;
 pub mod loadFromConfig;
 pub mod mysql_installation;
+pub mod hashing;
+pub mod token;
