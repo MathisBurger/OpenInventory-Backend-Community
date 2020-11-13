@@ -36,16 +36,17 @@ pub fn checkForTables(conn: &mut PooledConn) -> std::io::Result<()> {
 fn generate_table(conn: &mut PooledConn, name: String) -> std::io::Result<()>{
     if name == "inv_users".to_string() {
         conn.query_drop(Var::create_users_table_string().as_str()).expect("Cannot create MySQL Table");
-        insert_default_user(conn.borrow_mut());
+        println!("Created database 'inv_users'");
+        insert_default_user(conn);
     }
     Ok(())
 }
 
 fn insert_default_user(conn: &mut PooledConn) -> std::io::Result<()>{
     let hash = hashing::hash_including_salt("Admin123".to_string());
-    let pwd_struct: param = param {param: hash};
-    conn.exec_batch(r"INSERT INTO inv_users (id, username, password, token, root, mail, displayname, register_date, status) VALUES (NULL, 'root', ':pwd', 'None', '1', 'example@mail.de', 'root', current_timestamp(), 'enabled');",
-              
+    conn.exec_drop(format!("INSERT INTO inv_users (id, username, password, token, root, mail, displayname, register_date, status) VALUES (NULL, 'root', '{}', 'None', '1', 'example@mail.de', 'root', current_timestamp(), 'enabled');", hash),
+                   ()
+    ).expect("Cannot write default user to database");
     Ok(())
 }
 
