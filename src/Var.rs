@@ -1,3 +1,4 @@
+
 pub fn create_users_table_string() -> String {
     "CREATE TABLE inv_users(\
      id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,\
@@ -11,3 +12,5 @@ pub fn create_users_table_string() -> String {
      status VARCHAR(16)\
      );".to_string()
 }
+
+
