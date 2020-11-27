@@ -1,6 +1,7 @@
 use crate::utils;
 use sqlx::{mysql, Pool, MySql};
 use crate::models::SQl_Structs;
+use std::borrow::Borrow;
 
 pub async fn getConn() -> std::io::Result<Pool<MySql>> {
     let username = utils::loadFromConfig::loadParam(format!("{}", "database;username")).await.expect("Error while loading param from config");
@@ -13,6 +14,9 @@ pub async fn getConn() -> std::io::Result<Pool<MySql>> {
 pub async fn login(displayname: &String, password: &String) -> bool {
     let mut conn = getConn().await.expect("Cannot connect to database");
     println!("Username: {}", displayname);
+    let hash = utils::hashing::hash_from_database(displayname, password)
+        .await.expect("Cannot read hash");
+    println!("hash: {}", hash);
     let user = sqlx::query(format!("SELECT * FROM inv_users WHERE displayname='{}' AND password='{}'", displayname, password).as_str())
         .fetch_one(&conn).await;
     match user {
