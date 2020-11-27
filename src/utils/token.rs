@@ -4,6 +4,6 @@ use rand::Rng;
 pub fn generate() -> String{
     rand::thread_rng()
         .sample_iter(&Alphanumeric)
-        .take(10)
+        .take(32)
         .collect::<String>()
 }

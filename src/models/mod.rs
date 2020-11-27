@@ -1,3 +1,3 @@
 pub mod MessageModel;
 pub mod SQl_Structs;
-pub mod request;
+pub mod LoginCredentials;

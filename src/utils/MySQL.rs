@@ -10,10 +10,13 @@ pub async fn getConn() -> std::io::Result<Pool<MySql>> {
     Ok(mysql::MySqlPool::connect(&*format!("mysql://{}:{}@{}/{}", username, password, host, database)).await.expect("Error while creating connection"))
 }
 
-pub async fn login(displayname: String) -> bool {
+pub async fn login(displayname: &String, password: &String) -> bool {
     let mut conn = getConn().await.expect("Cannot connect to database");
-    let user = sqlx::query(format!("SELECT * FROM inv_users WHERE displayname={}", displayname).as_str())
-        .fetch_one(&conn).await.expect("Cannot fetch from database");
-    println!("Usermail: {:?}", user);
-    true
+    println!("Username: {}", displayname);
+    let user = sqlx::query(format!("SELECT * FROM inv_users WHERE displayname='{}' AND password='{}'", displayname, password).as_str())
+        .fetch_one(&conn).await;
+    match user {
+        Ok(user) => true,
+        Err(err) => false,
+    }
 }

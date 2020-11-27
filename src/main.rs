@@ -1,4 +1,4 @@
-use actix_web::{App, HttpServer, web};
+use actix_web::{App, HttpServer, web, http};
 mod controller;
 mod models;
 mod utils;
@@ -11,6 +11,8 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(controller::DefaultController::response))
+            .route("/login", web::post().to(controller::LoginController::response))
+
     })
         .bind("127.0.0.1:8080")?
         .run()
