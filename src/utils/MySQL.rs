@@ -13,14 +13,24 @@ pub async fn getConn() -> std::io::Result<Pool<MySql>> {
 
 pub async fn login(displayname: &String, password: &String) -> bool {
     let mut conn = getConn().await.expect("Cannot connect to database");
-    println!("Username: {}", displayname);
     let hash = utils::hashing::hash_from_database(displayname, password)
         .await.expect("Cannot read hash");
-    println!("hash: {}", hash);
-    let user = sqlx::query(format!("SELECT * FROM inv_users WHERE displayname='{}' AND password='{}'", displayname, password).as_str())
+    let user = sqlx::query(format!("SELECT * FROM inv_users WHERE displayname='{}' AND password='{}'", displayname, hash).as_str())
         .fetch_one(&conn).await;
+    conn.close();
     match user {
         Ok(user) => true,
+        Err(err) => false,
+    }
+}
+
+pub async fn updateToken(displayname: &String, token: &String) -> bool {
+    let mut conn = getConn().await.expect("Cannot connect to database");
+    let status = sqlx::query(format!("UPDATE inv_users SET token ='{}' WHERE displayname='{}';", token, displayname).as_str())
+        .execute(&conn).await;
+    conn.close();
+    match status {
+        Ok(o) => true,
         Err(err) => false,
     }
 }
