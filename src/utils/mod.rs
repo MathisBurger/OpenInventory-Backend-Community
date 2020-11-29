@@ -6,3 +6,4 @@ pub mod loadFromConfig;
 pub mod mysql_installation;
 pub mod hashing;
 pub mod token;
+pub mod table_sql;

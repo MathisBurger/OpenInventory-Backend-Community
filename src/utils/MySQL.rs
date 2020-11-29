@@ -24,6 +24,19 @@ pub async fn login(displayname: &String, password: &String) -> bool {
     }
 }
 
+pub async fn login_with_token(displayname: &String, password: &String, token: &String) -> bool {
+    let mut conn = getConn().await.expect("Cannot connect to database");
+    let hash = utils::hashing::hash_from_database(displayname, password)
+        .await.expect("Cannot read hash");
+    let user = sqlx::query(format!("SELECT * FROM inv_users WHERE displayname='{}' AND password='{}' AND token='{}'", displayname, hash, token).as_str())
+        .fetch_one(&conn).await;
+    conn.close();
+    match user {
+        Ok(user) => true,
+        Err(err) => false,
+    }
+}
+
 pub async fn updateToken(displayname: &String, token: &String) -> bool {
     let mut conn = getConn().await.expect("Cannot connect to database");
     let status = sqlx::query(format!("UPDATE inv_users SET token ='{}' WHERE displayname='{}';", token, displayname).as_str())
@@ -34,3 +47,4 @@ pub async fn updateToken(displayname: &String, token: &String) -> bool {
         Err(err) => false,
     }
 }
+

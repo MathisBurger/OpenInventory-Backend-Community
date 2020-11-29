@@ -16,6 +16,7 @@ async fn main() -> std::io::Result<()> {
             )
             .route("/", web::get().to(controller::DefaultController::response))
             .route("/login", web::post().to(controller::LoginController::response))
+            .route("/table_management/get_all", web::post().to(controller::AllTablesController::response))
 
     })
         .bind("0.0.0.0:8080")?
