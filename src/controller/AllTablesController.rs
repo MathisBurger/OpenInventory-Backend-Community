@@ -10,10 +10,9 @@ pub async fn response(info: Json<LoginCredentials::LoginRequestModel>) -> Result
         compiled_tables.push(format!("['{}','{}','{}']", table.name, table.entries, table.created_at));
     }
     let mut msg = String::new();
-    for i in 0..(compiled_tables.len() - 1) {
+    for i in 0..compiled_tables.len() {
         msg += format!("{},", compiled_tables[i]).as_str();
     }
-    msg += compiled_tables[(compiled_tables.len() - 1)].as_str();
     Ok(Json(MessageModel::MessageModel {
         message: msg,
         alert: "alert alert-success".to_string(),
