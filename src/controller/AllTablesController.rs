@@ -11,7 +11,7 @@ pub async fn response(info: Json<LoginCredentials::LoginRequestModel>) -> Result
     }
     let mut msg = String::new();
     for i in 0..compiled_tables.len() {
-        msg += format!("{},", compiled_tables[i]).as_str();
+        msg += format!("{};", compiled_tables[i]).as_str();
     }
     Ok(Json(MessageModel::MessageModel {
         message: msg,

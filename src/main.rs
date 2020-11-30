@@ -16,6 +16,7 @@ async fn main() -> std::io::Result<()> {
             )
             .route("/", web::get().to(controller::DefaultController::response))
             .route("/login", web::post().to(controller::LoginController::response))
+            .route("/check_creds", web::post().to(controller::CheckCredsController::response))
             .route("/table_management/get_all_tables", web::post().to(controller::AllTablesController::response))
 
     })

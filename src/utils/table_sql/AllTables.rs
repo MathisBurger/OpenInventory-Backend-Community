@@ -3,6 +3,7 @@ use crate::models::TableModel::TableModel;
 use sqlx::Row;
 
 pub async fn getAllTables(displayname: &String, password: &String, token: &String) -> Vec<TableModel> {
+    println!("{}", token);
     let status = login_with_token(displayname, password, token).await;
     if !status {
         vec![]
