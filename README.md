@@ -6,7 +6,7 @@ can develop it. I will review every incomming pull request. In my opinion this i
 a great project for everyone who want to develop on a growing project. 
 
 If this backend will be in an accaptable and stable state, I will publish it as
-alternative for the go backend. 
+alternative for the go backend. You will find the nessesary code in the 'rust-archived' branch.
 
 
 Happy coding,
